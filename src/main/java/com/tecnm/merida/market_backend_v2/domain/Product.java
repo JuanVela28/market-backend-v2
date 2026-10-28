@@ -2,10 +2,9 @@ package com.tecnm.merida.market_backend_v2.domain;
 
 public class Product {
 
-
     private Integer productId;
     private String name;
-    private int categoryId;
+    private Integer categoryId;
     private double price;
     private int stock;
     private boolean active;
@@ -27,11 +26,11 @@ public class Product {
         this.name = name;
     }
 
-    public int getCategoryId() {
+    public Integer getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(int categoryId) {
+    public void setCategoryId(Integer categoryId) {
         this.categoryId = categoryId;
     }
 
