@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,16 +21,17 @@ import java.util.List;
 @Tag(name = "Product",description = "Manage your products")
 public class ProductController {
 
+    @Autowired
     private ProductService productService;
     private ProductRepository productRepository;
 
     @GetMapping("")
     @Operation(summary = "Get all products",
-    description = "Return a list of all available products")
+            description = "Return a list of all available products")
     @ApiResponse(responseCode = "200",
-    description = "Succesful retrieval of products")
+            description = "Succesful retrieval of products")
     @ApiResponse(responseCode = "500",
-    description = "Internal server error")
+            description = "Internal server error")
     public ResponseEntity <List<Product>> getAll(){
         return new ResponseEntity<>(productService.getAll(), HttpStatus.OK);
     }
@@ -45,8 +47,8 @@ public class ProductController {
             description = "Internal server error")
     public ResponseEntity<Product> getProduct(
             @Parameter(description = "ID of the product to be retrieved",
-            example = "7",
-            required = true)
+                    example = "7",
+                    required = true)
             @PathVariable("id") int productId){
         return productService.getProduct(productId)
                 .map(ResponseEntity::ok)
@@ -65,7 +67,7 @@ public class ProductController {
     public ResponseEntity<List<Product>> getByCategory(
             @Parameter(description = "Category ID",
                     example = "7", required = true)
-            int categoryId){
+            @PathVariable int categoryId){
         return productService.getByCategory(categoryId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -102,6 +104,42 @@ public class ProductController {
     @ApiResponse(responseCode = "500", description = "Internal server error")
     public ResponseEntity<Product> save(@RequestBody Product product){
         return new ResponseEntity<>(productService.save(product), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    @Operation(
+            summary = "Update an existing product",
+            description = "Updates a product by its ID and returns it",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    required = true,
+                    content = @Content(
+                            examples = @ExampleObject(
+                                    name = "Example Update Product",
+                                    value =
+                                            """
+                                            { 
+                                               "name" : "Helado de Chocolate",
+                                               "categoryId" : 5,
+                                               "price" : 22.00,
+                                               "stock" : 250,
+                                               "active" : true
+                                            }                                           
+                                            """
+                            )
+                    )
+            )
+    )
+    @ApiResponse(responseCode = "200", description = "Product updated successfully")
+    @ApiResponse(responseCode = "400", description = "Invalid product data")
+    @ApiResponse(responseCode = "404", description = "Product not found")
+    @ApiResponse(responseCode = "500", description = "Internal server error")
+    public ResponseEntity<Product> update(
+            @Parameter(description = "ID of the product to be updated", example = "7", required = true)
+            @PathVariable("id") int productId,
+            @RequestBody Product product){
+        return productService.update(productId, product)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")

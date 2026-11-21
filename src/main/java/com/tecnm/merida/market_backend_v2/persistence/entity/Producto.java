@@ -57,7 +57,7 @@ public class Producto {
         return idCategoria;
     }
 
-    public void setId_categoria(Integer id_categoria) {
+    public void setIdCategoria(Integer id_categoria) {
         this.idCategoria = id_categoria;
     }
 
