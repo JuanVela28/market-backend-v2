@@ -42,4 +42,10 @@ public class ClienteRepository implements ClientRepository {
     public void delete(String clientId) {
         clienteCrudRepository.deleteById(clientId);
     }
+
+    @Override
+    public Optional<Client> getByEmail(String email) {
+        return clienteCrudRepository.findByCorreoElectronico(email)
+                .map(cliente -> mapper.toClient(cliente));
+    }
 }

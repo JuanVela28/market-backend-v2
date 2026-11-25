@@ -11,4 +11,5 @@ public interface ClientRepository {
     Optional<Client> getClient(String clientId);
     Client save(Client client);
     void delete(String clientId);
+    Optional<Client> getByEmail(String email);
 }
